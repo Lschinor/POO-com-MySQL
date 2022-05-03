@@ -1,0 +1,143 @@
+import pymysql.cursors
+import matplotlib.pyplot as py
+import random
+
+class admin():
+    def __init__(self):
+        pass
+
+    def conexao(self):
+        try:
+            self.banco = pymysql.connect(
+                host='localhost',
+                user='root',
+                password='',
+                db='fitgym',
+                charset='utf8mb4',
+                cursorclass= pymysql.cursors.DictCursor
+            )
+        except:
+            print('Erro')
+
+    def cadastro(self):
+        self.conexao()
+        nome = str(input('Nome: '))
+        nascimento = str(input('Data de nascimento: '))
+        sexo = str(input('Sexo [M/F]: '))
+        objetivo = str(input('Objetivo: '))
+        dados = [nome, nascimento, sexo, objetivo]
+        iniciantes().cadastraraluno(dados)
+
+
+    def adc(self):
+        c = str(input('Adicione o novo treino: '))
+        print(c)
+
+
+    def treinos(self):
+        self.conexao()
+        self.adc()
+
+        a = ("""
+         peitoral: 3 x 10 
+         supino reto 3 x 10
+         crucifixo 3 x 10
+         cros over 3 x 10
+         """)
+
+        b = (""" 
+        puxador frente: 3 x 10
+        remada baixa: 3 x 10
+        pulldown: 3 x 10
+        remada sentada 3 x 10
+        """)
+
+        print(a)
+        print(b)
+
+    def alunos(self):
+        self.conexao()
+
+        with self.banco.cursor() as cursos:
+            cursos.execute('select * from alunos')
+            alunos = cursos.fetchall()
+            print(alunos)
+
+    def evolução(self):
+        lucas = {'Janeiro': 80, 'Fevereiro': 75, 'Março': 70}
+        ana = {'Janeiro': 35, 'Feveriro': 38, 'Março': 42}
+        print(lucas)
+        print(ana)
+
+        evoluçao = str(input('De quem você que ver a evolução? '))
+        a = ('Janeiro', 'Fevereiro', 'Março')
+        b = (80, 75, 70)
+        py.bar(a, b)
+        py.show()
+
+
+
+
+class iniciantes(admin):
+    def __init__(self):
+        pass
+
+    def cadastraraluno(self, dados):
+        self.conexao()
+
+        with self.banco.cursor() as cursos:
+            sql = 'insert into alunos (nome, nascimento, sexo, objetivo) values (%s, %s, %s, %s)'
+            cursos.execute(sql, dados)
+            self.banco.commit()
+            print('ALUNO CADASTRADO')
+
+
+import academia as acd
+
+
+nome = 'Lucas'
+senha = 123
+pa = 0
+
+print('Professor [1] ou Aluno [2]? ')
+while True:
+    pa = int(input('Professor ou  aluno? '))
+    if pa == 1:
+        nome = str(input('Nome: '))
+        senha = int(input('Senha: '))
+        if nome == 'Lucas' and senha == 123:
+            break
+        else:
+            print('Tente novamente')
+
+def main():
+    print("""
+    [1] Cadastrar
+    [2] Treinos
+    [3] Adicionar Treinos
+    [4] Alunos
+    [5] Evolução
+    [6] Feedback
+    """)
+    op = int(input('Opção desejada: '))
+
+    if op == 1:
+        acd.admin().cadastro()
+
+    elif op == 2:
+        acd.admin().treinos()
+
+    elif op == 3:
+        acd.admin().adc()
+
+    elif op == 4:
+        acd.admin().alunos()
+
+    elif op == 5:
+        acd.admin().evolução()
+
+
+
+if __name__ == '__main__':
+    main()
+
